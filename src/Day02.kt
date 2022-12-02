@@ -1,8 +1,8 @@
 fun main() {
-    fun checkRound(it: String): Int {
+    fun checkGuessRound(it: String): Int {
         val (a, b) = it.split(" ").map { it.toCharArray().first() }
         val selectionPoints = b.code - 87
-        val score2 = when (selectionPoints == a.code - 64) {
+        val score = when (selectionPoints == a.code - 64) {
             true -> 1
             false -> when (b) {
                 'X' -> when (a) {
@@ -24,22 +24,51 @@ fun main() {
             }
         }
 
-        return selectionPoints + (score2 * 3)
+        return selectionPoints + (score * 3)
     }
 
     fun part1(input: List<String>): Int {
-        return input.sumOf { checkRound(it) }
+        return input.sumOf { checkGuessRound(it) }
+    }
+
+    fun checkExpectedRound(it: String): Int {
+        val (a, b) = it.split(" ").map { it.toCharArray().first() }
+        val score = (b.code - 88)
+        val selectionPoints = when (score) {
+            0 -> when (a) {
+                'A' -> 3
+                'B' -> 1
+                else -> 2
+            }
+
+            1 -> when (a) {
+                'A' -> 1
+                'B' -> 2
+                else -> 3
+            }
+
+            2 -> when (a) {
+                'A' -> 2
+                'B' -> 3
+                else -> 1
+            }
+
+            else -> 0
+        }
+
+
+        return selectionPoints + (score * 3)
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        return input.sumOf { checkExpectedRound(it) }
     }
 
     val testInput = readInput("Day02_test")
     check(part1(testInput) == 15)
-//    check(part2(testInput) == 45000)
+    check(part2(testInput) == 12)
 
     val input = readInput("Day02")
     println(part1(input))
-//    println(part2(input))
+    println(part2(input))
 }
