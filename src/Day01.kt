@@ -3,16 +3,16 @@ import kotlin.math.max
 fun main() {
     fun part1(input: List<String>): Int {
         return partitionByLine(input).map { it ->
-            it.map { it.toInt() }.fold(0) { acc, calories -> acc + calories }
+            it.sumOf { it.toInt() }
         }
             .reduce { acc, curr -> max(acc, curr) }
     }
 
     fun part2(input: List<String>): Int {
         return partitionByLine(input).map { it ->
-            it.map { it.toInt() }.fold(0) { acc, calories -> acc + calories }
+            it.sumOf { it.toInt() }
         }
-            .sortedDescending().take(3).reduce { acc, curr -> acc + curr }
+            .sortedDescending().take(3).sum()
     }
 
     val testInput = readInput("Day01_test")
