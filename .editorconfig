@@ -8,8 +8,11 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 end_of_line = crlf
-max_line_length = 100
+max_line_length = 120
 
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false
+
+[*.txt]
+ij_formatter_enabled = false

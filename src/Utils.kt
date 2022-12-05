@@ -24,10 +24,9 @@ fun String.md5() =
 /**
  * partitions the given list by a given predicate is true
  */
-
-fun partition(input: List<String>, partitionWhen: Predicate<String>): ArrayList<ArrayList<String>> {
-    return input.fold(arrayListOf(arrayListOf<String>()),
-        fun(acc: ArrayList<ArrayList<String>>, curr: String): ArrayList<ArrayList<String>> {
+fun <E> List<E>.partitionWhen(partitionWhen: Predicate<E>): List<List<E>> {
+    return this.fold(arrayListOf(arrayListOf<E>()),
+        fun(acc: ArrayList<ArrayList<E>>, curr: E): ArrayList<ArrayList<E>> {
             if (partitionWhen.test(curr)) {
                 acc.add(arrayListOf())
             } else if (acc.lastIndex >= 0) {
@@ -41,6 +40,6 @@ fun partition(input: List<String>, partitionWhen: Predicate<String>): ArrayList<
 /**
  * partitions the given list by the provided value
  */
-fun partitionByLine(input: List<String>, line: String = ""): List<List<String>> {
-    return partition(input) { it == line }
+fun <E> List<E>.partitionOnElement(by: E): List<List<E>> {
+    return this.partitionWhen { by?.equals(it) == true }
 }

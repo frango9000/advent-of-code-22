@@ -2,14 +2,14 @@ import kotlin.math.max
 
 fun main() {
     fun part1(input: List<String>): Int {
-        return partitionByLine(input).map { it ->
+        return input.partitionOnElement("").map { it ->
             it.sumOf { it.toInt() }
         }
             .reduce { acc, curr -> max(acc, curr) }
     }
 
     fun part2(input: List<String>): Int {
-        return partitionByLine(input).map { it ->
+        return input.partitionOnElement("").map { it ->
             it.sumOf { it.toInt() }
         }
             .sortedDescending().take(3).sum()
