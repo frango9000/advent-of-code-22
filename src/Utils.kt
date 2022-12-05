@@ -25,15 +25,14 @@ fun String.md5() =
  * partitions the given list by a given predicate is true
  */
 fun <E> List<E>.partitionWhen(partitionWhen: Predicate<E>): List<List<E>> {
-    return this.fold(arrayListOf(arrayListOf<E>()),
-        fun(acc: ArrayList<ArrayList<E>>, curr: E): ArrayList<ArrayList<E>> {
-            if (partitionWhen.test(curr)) {
-                acc.add(arrayListOf())
-            } else if (acc.lastIndex >= 0) {
-                acc[acc.lastIndex].add(curr)
-            }
-            return acc
-        })
+    return this.fold(arrayListOf(arrayListOf<E>())) { acc: ArrayList<ArrayList<E>>, curr: E ->
+        if (partitionWhen.test(curr)) {
+            acc.add(arrayListOf())
+        } else if (acc.lastIndex >= 0) {
+            acc[acc.lastIndex].add(curr)
+        }
+        acc
+    }
 }
 
 
