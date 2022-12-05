@@ -3,7 +3,7 @@ fun main() {
         val (initial, rawActions) = input.partitionOnElement("")
 
         val numberOfStacks = initial.maxOf { it.length } / 3
-        val stacks: List<ArrayDeque<Char>> = (1..numberOfStacks).toList().map { ArrayDeque<Char>(initial.size) }
+        val stacks: List<ArrayDeque<Char>> = (1..numberOfStacks).toList().map { ArrayDeque<Char>(initial.size * 2) }
         val initialReversed = initial.dropLast(1).reversed()
         for (level in initialReversed) {
             for (i in 1..numberOfStacks) {
@@ -32,7 +32,7 @@ fun main() {
 
         val numberOfStacks = initial.maxOf { it.length } / 3
         val stacks: MutableList<ArrayDeque<Char>> =
-            (1..numberOfStacks).toList().map { ArrayDeque<Char>(initial.size) }.toMutableList()
+            (1..numberOfStacks).toList().map { ArrayDeque<Char>(initial.size * 2) }.toMutableList()
         val initialReversed = initial.dropLast(1).reversed()
         for (level in initialReversed) {
             for (i in 1..numberOfStacks) {
