@@ -1,11 +1,11 @@
 fun main() {
 
     fun part1(input: List<String>): Int {
-        return uniqueSequenceIndex(input, 4)
+        return input.uniqueSequenceIndex(4)
     }
 
     fun part2(input: List<String>): Int {
-        return uniqueSequenceIndex(input, 14)
+        return input.uniqueSequenceIndex(14)
     }
 
     val testInput = readInput("Day06_test")
@@ -25,12 +25,6 @@ fun main() {
     println(part2(input))
 }
 
-fun uniqueSequenceIndex(input: List<String>, count: Int): Int {
-    val (dataStream) = input
-    for (i in count - 1 until dataStream.length) {
-        if ((i - count + 1..i).toList().map { dataStream[it] }.toSet().size == count) {
-            return i + 1
-        }
-    }
-    return 0
+fun List<String>.uniqueSequenceIndex(count: Int): Int {
+    return this[0].windowedSequence(count).indexOfFirst { it.toSet().count() == count } + count
 }
