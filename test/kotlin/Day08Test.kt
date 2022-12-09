@@ -2,7 +2,13 @@ import org.junit.jupiter.api.Test
 
 class Day08Test {
 
-    private val testInput = readTestInput("Day08_test")
+    private val testInput = listOf(
+        "30373",
+        "25512",
+        "65332",
+        "33549",
+        "35390",
+    )
 
     @Test
     fun part1() {

@@ -42,3 +42,5 @@ fun <E> List<E>.partitionWhen(partitionWhen: Predicate<E>): List<List<E>> {
 fun <E> List<E>.partitionOnElement(by: E): List<List<E>> {
     return this.partitionWhen { by?.equals(it) == true }
 }
+
+data class Coordinate(var x: Int, var y: Int)
