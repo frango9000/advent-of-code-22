@@ -9,9 +9,9 @@ import java.util.function.Predicate
 fun readInput(name: String) = File("src", "$name.txt").readLines()
 
 /**
- * Reads the given input txt file.
+ * Reads lines from the given input txt file.
  */
-fun readInputFile(name: String) = File("src", "$name.txt").readText()
+fun readTestInput(name: String) = File("test/kotlin", "$name.txt").readLines()
 
 /**
  * Converts string to md5 hash.
