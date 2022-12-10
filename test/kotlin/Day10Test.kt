@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class Day10Test {
 
@@ -153,11 +154,20 @@ class Day10Test {
 
     @Test
     fun part1() {
-        check(Day10.part1(testInput) == 13140)
+        assertEquals(13140, Day10.part1(testInput))
     }
 
     @Test
     fun part2() {
-        println(Day10.part2(testInput) == Int.MAX_VALUE)
+        assertEquals(
+            """
+            ▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░▓▓░░
+            ▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░░░▓▓▓░
+            ▓▓▓▓░░░░▓▓▓▓░░░░▓▓▓▓░░░░▓▓▓▓░░░░▓▓▓▓░░░░
+            ▓▓▓▓▓░░░░░▓▓▓▓▓░░░░░▓▓▓▓▓░░░░░▓▓▓▓▓░░░░░
+            ▓▓▓▓▓▓░░░░░░▓▓▓▓▓▓░░░░░░▓▓▓▓▓▓░░░░░░▓▓▓▓
+            ▓▓▓▓▓▓▓░░░░░░░▓▓▓▓▓▓▓░░░░░░░▓▓▓▓▓▓▓░░░░░
+            """.trimIndent(), Day10.part2(testInput)
+        )
     }
 }
