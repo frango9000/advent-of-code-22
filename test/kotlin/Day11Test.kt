@@ -40,6 +40,6 @@ class Day11Test {
 
     @Test
     fun part2() {
-//        assertEquals(Int.MAX_VALUE, Day11.part2(testInput))
+        assertEquals(2713310158, Day11.part2(testInput))
     }
 }

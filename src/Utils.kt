@@ -2,6 +2,7 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.function.Predicate
+import kotlin.math.absoluteValue
 import kotlin.system.measureNanoTime
 
 /**
@@ -48,3 +49,22 @@ data class Coordinate(var x: Int, var y: Int)
 fun printTime(function: () -> Unit) {
     println("${measureNanoTime { function() }.toFloat() / 1000000}ms")
 }
+
+
+fun Iterable<Int>.product() = this.reduce { acc, i -> acc * i }
+fun Iterable<Long>.product() = this.reduce { acc, i -> acc * i }
+
+infix fun Int.isDivisibleBy(divisor: Int) = this % divisor == 0
+infix fun Long.isDivisibleBy(divisor: Long) = this % divisor == 0L
+
+
+/**
+ * Euclid's algorithm for finding the greatest common divisor of a and b.
+ */
+fun gcd(a: Long, b: Long): Long = if (b == 0L) a.absoluteValue else gcd(b, a % b)
+
+/**
+ * Find the least common multiple of a and b using the gcd of a and b.
+ */
+fun lcm(a: Long, b: Long) = (a * b) / gcd(a, b)
+fun Iterable<Long>.lcm(): Long = reduce(::lcm)
