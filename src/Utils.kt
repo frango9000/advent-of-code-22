@@ -43,7 +43,7 @@ fun <E> List<E>.partitionOnElement(by: E): List<List<E>> {
     return this.partitionWhen { by?.equals(it) == true }
 }
 
-data class Coordinate(var x: Int, var y: Int)
+data class Coordinate(var x: Int = 0, var y: Int = 0)
 
 
 fun printTime(function: () -> Unit) {
@@ -68,3 +68,20 @@ fun gcd(a: Long, b: Long): Long = if (b == 0L) a.absoluteValue else gcd(b, a % b
  */
 fun lcm(a: Long, b: Long) = (a * b) / gcd(a, b)
 fun Iterable<Long>.lcm(): Long = reduce(::lcm)
+
+
+fun <R, T> List<List<T>>.mapMatrix(mapper: (T) -> R): List<List<R>> {
+    return this.map { it.map { mapper(it) } }
+}
+
+fun <R, T> List<List<T>>.mapMatrixIndexed(mapper: (Int, Int, T) -> R): List<List<R>> {
+    return this.mapIndexed { i, row -> row.mapIndexed { j, item -> mapper(i, j, item) } }
+}
+
+fun <R, T> List<List<T>>.matrixForEach(mapper: (T) -> R): Unit {
+    return this.forEach { it.forEach { mapper(it) } }
+}
+
+fun <R, T> List<List<T>>.matrixForEachIndexed(mapper: (Int, Int, T) -> R): Unit {
+    return this.forEachIndexed { i, row -> row.forEachIndexed { j, item -> mapper(i, j, item) } }
+}
