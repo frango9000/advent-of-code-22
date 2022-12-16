@@ -3,7 +3,7 @@ import kotlin.math.max
 fun main() {
     val input = readInput("Day13")
     printTime { println(Day13.part1(input)) }
-//    println(Day13.part2(input))
+    printTime { println(Day13.part2(input)) }
 }
 
 class Day13 {
@@ -12,6 +12,17 @@ class Day13 {
             val packetPairs = input.partitionOnElement("").map { it.map { parsePacket(it.substring(1, it.lastIndex)) } }
             val packetComparisons: List<Int> = packetPairs.map { (first, second) -> comparePackets(first, second) }
             return packetComparisons.withIndex().filter { it.value <= 0 }.sumOf { it.index + 1 }
+        }
+
+        fun part2(input: List<String>): Int {
+            val packet2 = parsePacket("[2]")
+            val packet6 = parsePacket("[6]")
+            val packets = input.filter { it != "" }
+                .map { parsePacket(it.substring(1, it.lastIndex)) }.toMutableList().apply { add(packet2); add(packet6) }
+            val sortedPackets = packets.sortedWith { p0, p1 -> comparePackets(p0, p1) }
+            return sortedPackets.withIndex()
+                .filter { comparePackets(packet2, it.value) == 0 || comparePackets(packet6, it.value) == 0 }
+                .map { it.index + 1 }.product()
         }
 
         private fun comparePackets(first: Any, second: Any): Int {
@@ -63,10 +74,6 @@ class Day13 {
                 }
             }
             return root
-        }
-
-        fun part2(input: List<String>): Int {
-            return 0
         }
     }
 }
