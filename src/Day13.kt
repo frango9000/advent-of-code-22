@@ -9,10 +9,9 @@ fun main() {
 class Day13 {
     companion object {
         fun part1(input: List<String>): Int {
-            val x = input.partitionOnElement("").map { it.map { parsePacket(it.substring(1, it.lastIndex)) } }
-            val bools: List<Int> = x.map { (first, second) -> comparePackets(first, second) }
-
-            return bools.withIndex().filter { it.value <= 0 }.sumOf { it.index + 1 }
+            val packetPairs = input.partitionOnElement("").map { it.map { parsePacket(it.substring(1, it.lastIndex)) } }
+            val packetComparisons: List<Int> = packetPairs.map { (first, second) -> comparePackets(first, second) }
+            return packetComparisons.withIndex().filter { it.value <= 0 }.sumOf { it.index + 1 }
         }
 
         private fun comparePackets(first: Any, second: Any): Int {
