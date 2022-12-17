@@ -85,3 +85,8 @@ fun <R, T> List<List<T>>.matrixForEach(mapper: (T) -> R): Unit {
 fun <R, T> List<List<T>>.matrixForEachIndexed(mapper: (Int, Int, T) -> R): Unit {
     return this.forEachIndexed { i, row -> row.forEachIndexed { j, item -> mapper(i, j, item) } }
 }
+
+infix fun Int.towards(to: Int): IntProgression {
+    val step = if (this > to) -1 else 1
+    return IntProgression.fromClosedRange(this, to, step)
+}
