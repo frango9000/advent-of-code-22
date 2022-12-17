@@ -13,8 +13,8 @@ class Day14Test {
         assertEquals(24, Day14.part1(testInput))
     }
 
-//    @Test
-//    fun part2() {
-//        assertEquals(-1, Day14.part2(testInput))
-//    }
+    @Test
+    fun part2() {
+        assertEquals(93, Day14.part2(testInput))
+    }
 }

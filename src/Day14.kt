@@ -1,7 +1,7 @@
 fun main() {
     val input = readInput("Day14")
     printTime { println(Day14.part1(input)) }
-//    println(Day14.part2(input))
+    printTime { println(Day14.part2(input)) }
 }
 
 class Day14 {
@@ -15,7 +15,6 @@ class Day14 {
             points.forEach { it.x -= minX }
             val lines = pointMatrix.map { it.windowed(2).map { (start, end) -> Line(start, end) } }.flatten()
 
-
             val map = (0..maxY).map { (minX..maxX).map { "." }.toTypedArray() }.toTypedArray()
 
             for (line in lines) {
@@ -26,12 +25,12 @@ class Day14 {
                 }
             }
             map[0][500 - minX] = "+"
+//            map.print()
 
             val quickSand = mutableListOf(Point(500 - minX, 0))
             val stuckSand = mutableListOf<Point>()
             while (true) {
                 try {
-
                     for (sandIndex in (quickSand.lastIndex downTo 0)) {
                         val sand = quickSand[sandIndex]
                         while (true) {
@@ -56,14 +55,64 @@ class Day14 {
                 if (!quickSand.removeAll(stuckSand)) break
                 quickSand.add(Point(500 - minX, 0))
             }
-
 //            map.print()
             return stuckSand.size
         }
 
 
         fun part2(input: List<String>): Int {
-            return 0
+            val pointMatrix = input.map { it.split(" -> ").map(::Point) }
+            val points = pointMatrix.flatten()
+            val maxY = points.maxOf { it.y }
+            val base = maxY + 2
+            val lines = pointMatrix.map { it.windowed(2).map { (start, end) -> Line(start, end) } }.flatten()
+
+            val map = (0..base).map { (0..700).map { "." }.toTypedArray() }.toTypedArray()
+
+            for (line in lines) {
+                for (y in (line.start.y towards line.end.y)) {
+                    for (x in (line.start.x towards line.end.x)) {
+                        map[y][x] = "#"
+                    }
+                }
+            }
+            map[base].fill("#")
+            map[0][500] = "+"
+
+            val quickSand = mutableListOf(Point(500, 0))
+            val stuckSand = mutableListOf<Point>()
+            while (true) {
+                try {
+                    for (sandIndex in (quickSand.lastIndex downTo 0)) {
+                        val sand = quickSand[sandIndex]
+                        while (true) {
+                            if (ifIsEmpty(map, sand.y + 1, sand.x)) {
+                                map[sand.y][sand.x] = "."
+                                map[++sand.y][sand.x] = "o"
+                            } else if (ifIsEmpty(map, sand.y + 1, sand.x - 1)) {
+                                map[sand.y][sand.x] = "."
+                                map[++sand.y][--sand.x] = "o"
+                            } else if (ifIsEmpty(map, sand.y + 1, sand.x + 1)) {
+                                map[sand.y][sand.x] = "."
+                                map[++sand.y][++sand.x] = "o"
+                            } else {
+                                stuckSand.add(sand)
+                                if (sand.y == 0) {
+                                    map[0][sand.x] = "o"
+                                    throw ArrayIndexOutOfBoundsException()
+                                }
+                                break
+                            }
+                        }
+                    }
+                    quickSand.removeAll(stuckSand)
+                } catch (e: ArrayIndexOutOfBoundsException) {
+                    break
+                }
+                quickSand.add(Point(500, 0))
+            }
+//            map.print()
+            return stuckSand.size
         }
 
 
