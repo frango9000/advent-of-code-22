@@ -29,5 +29,4 @@ class Day15Test {
     fun part2() {
         assertEquals(56000011, Day15.part2(testInput, 20))
     }
-
 }

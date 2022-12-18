@@ -111,3 +111,25 @@ fun Iterable<IntRange>.merge(): List<IntRange> {
 }
 
 val IntRange.size get() = (last - first + 1).coerceAtLeast(0)
+
+
+fun IntRange.subtract(others: Iterable<IntRange>): List<IntRange> {
+    val relevant = others.merge().filter { it overlaps this }
+    if (relevant.isEmpty()) return listOf(this)
+
+    return buildList {
+        var includeFrom = first
+        relevant.forEach { minus ->
+            if (minus.first > includeFrom)
+                add(includeFrom until minus.first.coerceAtMost(last))
+            includeFrom = minus.last + 1
+        }
+        if (includeFrom <= last)
+            add(includeFrom..last)
+    }
+}
+
+infix fun <T : Comparable<T>> ClosedRange<T>.overlaps(other: ClosedRange<T>): Boolean {
+    if (isEmpty() || other.isEmpty()) return false
+    return !(this.endInclusive < other.start || this.start > other.endInclusive)
+}
