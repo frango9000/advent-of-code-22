@@ -14,6 +14,31 @@ class Day15 {
                     .map { (x, y) -> Point(x, y) }
             }
 
+            val blockedRanges: List<IntRange> = sensorsAndBeacons.mapNotNull {
+                scannerRangeOnRow(it, targetY)
+            }.merge()
+
+
+            val blockedXsInYTarget = sensorsAndBeacons.flatten().filter { it.y == targetY }.map { it.x }.toSet()
+            return blockedRanges.sumOf { it.size } - blockedXsInYTarget.size
+        }
+
+        private fun scannerRangeOnRow(points: List<Point>, targetY: Int): IntRange? {
+            val (sensor, beacon) = points
+            val sensorCoverage = sensor.rectilinearDistanceTo(beacon)
+            val yDistanceToYTarget = (targetY - sensor.y).absoluteValue
+            val yOverlapBy = sensorCoverage - yDistanceToYTarget
+            return if (yOverlapBy <= 0) null
+            else (sensor.x - yOverlapBy..sensor.x + yOverlapBy)
+        }
+
+
+        fun part1withArray(input: List<String>, targetY: Int): Int {
+            val sensorsAndBeacons = input.map {
+                it.substring(10).split(": closest beacon is at ").map { it.split(", ").map { it.substring(2).toInt() } }
+                    .map { (x, y) -> Point(x, y) }
+            }
+
             val offset = sensorsAndBeacons.maxOf { it[0].rectilinearDistanceTo(it[1]) } * 2
             val beaconMaxX = sensorsAndBeacons.maxOf { it[1].x }
             val blockedXsInTargetY = BooleanArray(beaconMaxX + offset)

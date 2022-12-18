@@ -90,3 +90,24 @@ infix fun Int.towards(to: Int): IntProgression {
     val step = if (this > to) -1 else 1
     return IntProgression.fromClosedRange(this, to, step)
 }
+
+
+fun Iterable<IntRange>.merge(): List<IntRange> {
+    val sorted = this.filter { !it.isEmpty() }.sortedBy { it.first }
+    sorted.isNotEmpty() || return emptyList()
+
+    val stack = ArrayDeque<IntRange>()
+    stack.add(sorted.first())
+    sorted.drop(1).forEach { current ->
+        if (current.last <= stack.last().last) {
+            //
+        } else if (current.first > stack.last().last + 1) {
+            stack.add(current)
+        } else {
+            stack.add(stack.removeLast().first..current.last)
+        }
+    }
+    return stack
+}
+
+val IntRange.size get() = (last - first + 1).coerceAtLeast(0)
