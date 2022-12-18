@@ -46,8 +46,8 @@ fun <E> List<E>.partitionOnElement(by: E): List<List<E>> {
 data class Coordinate(var x: Int = 0, var y: Int = 0)
 
 
-fun printTime(function: () -> Unit) {
-    println("${measureNanoTime { function() }.toFloat() / 1000000}ms")
+fun printTime(pre: String = "\n[", post: String = "]\n\n", function: () -> Unit) {
+    print("$pre${measureNanoTime { function() }.toFloat() / 1000000}ms$post")
 }
 
 

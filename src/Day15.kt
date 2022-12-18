@@ -2,8 +2,8 @@ import kotlin.math.absoluteValue
 
 fun main() {
     val input = readInput("Day15")
-    printTime { println(Day15.part1(input, 2_000_000)) }
-    println(Day15.part2(input))
+    printTime { print(Day15.part1(input, 2_000_000)) }
+//    println(Day15.part2(input))
 }
 
 class Day15 {
@@ -13,18 +13,29 @@ class Day15 {
                 it.substring(10).split(": closest beacon is at ").map { it.split(", ").map { it.substring(2).toInt() } }
                     .map { (x, y) -> Point(x, y) }
             }
-            val xsInYTarget = mutableSetOf<Int>()
+
+            val maxCoverage = sensorsAndBeacons.maxOf { it[0].rectilinearDistanceTo(it[1]) }
+            val beaconMaxX = sensorsAndBeacons.maxOf { it[1].x }
+            val offset = maxCoverage * 2
+            val xsInYTarget = BooleanArray(beaconMaxX + offset) { true }
 
             for ((sensor, beacon) in sensorsAndBeacons) {
                 val sensorCoverage = sensor.rectilinearDistanceTo(beacon)
                 val yDistanceToYTarget = (yTarget - sensor.y).absoluteValue
                 val yOverlapBy = sensorCoverage - yDistanceToYTarget
                 if (yOverlapBy > 0) {
-                    xsInYTarget.addAll(((sensor.x - (yOverlapBy)) towards (sensor.x + (yOverlapBy))))
+                    for (x in (sensor.x - (yOverlapBy)) towards (sensor.x + (yOverlapBy))) {
+                        xsInYTarget[x + offset] = false
+                    }
                 }
             }
-            return (xsInYTarget subtract (sensorsAndBeacons.map { it[1] }.filter { it.y == yTarget }.map { it.x }
-                .toSet())).size
+
+            val beaconXsInYTarget = sensorsAndBeacons.map { it[1] }.filter { it.y == yTarget }.map { it.x }
+            for (beaconX in beaconXsInYTarget) {
+                xsInYTarget[beaconX + offset] = true
+            }
+
+            return xsInYTarget.count { !it }
         }
 
         fun part2(input: List<String>): Int {
