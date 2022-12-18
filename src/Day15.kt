@@ -43,27 +43,22 @@ class Day15 {
                     .map { (x, y) -> Point(x, y) }
             }
             val validRange = 0..side
-            val blockedXsMap = (validRange.map { BooleanArray(side + 1) }).toTypedArray()
 
-            for ((sensor, beacon) in sensorsAndBeacons) {
-                val sensorCoverage = sensor.rectilinearDistanceTo(beacon)
-                for (y in ((sensor.y - sensorCoverage) towards (sensor.y + sensorCoverage))) {
+            for (y in validRange) {
+                val blockedXsInTargetY = BooleanArray(side + 1)
+                for ((sensor, beacon) in sensorsAndBeacons) {
+                    val sensorCoverage = sensor.rectilinearDistanceTo(beacon)
                     val yDistanceToYTarget = (y - sensor.y).absoluteValue
                     val yOverlapBy = sensorCoverage - yDistanceToYTarget
-                    for (x in (sensor.x - (yOverlapBy)) towards (sensor.x + (yOverlapBy))) {
-                        if (x in validRange && y in validRange) blockedXsMap[y][x] = true
+                    if (yOverlapBy > 0) {
+                        for (x in (sensor.x - (yOverlapBy)) towards (sensor.x + (yOverlapBy))) {
+                            if (x in validRange && y in validRange) blockedXsInTargetY[x] = true
+                        }
                     }
                 }
+                if (blockedXsInTargetY.any { !it }) return blockedXsInTargetY.indexOfFirst { !it } * 4_000_000 + y
             }
-
-            for ((x, y) in sensorsAndBeacons.map { it[1] }) {
-                if (x in validRange && y in validRange) blockedXsMap[y][x] = true
-            }
-
-            val (y, x) = blockedXsMap.mapIndexed { index, booleans -> listOf(index, booleans.indexOfFirst { !it }) }
-                .first { it[1] >= 0 }
-
-            return x * 4_000_000 + y
+            error("Not Found")
         }
     }
 
