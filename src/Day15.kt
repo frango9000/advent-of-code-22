@@ -13,19 +13,18 @@ class Day15 {
                 it.substring(10).split(": closest beacon is at ").map { it.split(", ").map { it.substring(2).toInt() } }
                     .map { (x, y) -> Point(x, y) }
             }
-            val pointsInYTarget = mutableSetOf<Point>()
+            val xsInYTarget = mutableSetOf<Int>()
 
             for ((sensor, beacon) in sensorsAndBeacons) {
                 val sensorCoverage = sensor.rectilinearDistanceTo(beacon)
                 val yDistanceToYTarget = (yTarget - sensor.y).absoluteValue
                 val yOverlapBy = sensorCoverage - yDistanceToYTarget
                 if (yOverlapBy > 0) {
-                    pointsInYTarget.addAll(((sensor.x - (yOverlapBy)) towards (sensor.x + (yOverlapBy))).map {
-                        Point(it, yTarget)
-                    })
+                    xsInYTarget.addAll(((sensor.x - (yOverlapBy)) towards (sensor.x + (yOverlapBy))))
                 }
             }
-            return (pointsInYTarget subtract sensorsAndBeacons.map { it[1] }.toSet()).size
+            return (xsInYTarget subtract (sensorsAndBeacons.map { it[1] }.filter { it.y == yTarget }.map { it.x }
+                .toSet())).size
         }
 
         fun part2(input: List<String>): Int {
@@ -41,17 +40,6 @@ class Day15 {
 
         override fun toString(): String {
             return "Point(x=$x, y=$y)"
-        }
-
-        override fun equals(other: Any?): Boolean {
-            other as Point
-            return (x == other.x && y == other.y)
-        }
-
-        override fun hashCode(): Int {
-            var result = x
-            result = 31 * result + y
-            return result
         }
     }
 }
