@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class Day16Test {
 
@@ -19,10 +20,15 @@ class Day16Test {
     @Test
     fun part1() {
         assertEquals(1651, Day16.part1(testInput))
+
+//        val input = readInput("Day16")
+//        val full = Day16.part1(input)
+//        println(full)
+//        assertTrue(full < 2014) //x < 2014
     }
 
     @Test
     fun part2() {
-        assertEquals(56000011, Day16.part2(testInput))
+//        assertEquals(56000011, Day16.part2(testInput))
     }
 }
