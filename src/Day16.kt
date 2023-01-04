@@ -1,6 +1,6 @@
 fun main() {
-    val input = readInput("Day16g")
-    printTime { print(Day16.part1(input)) } //x < 2014 < 2153
+    val input = readInput("Day16")
+    printTime { print(Day16.part1(input)) }
 //    printTime { print(Day16.part2(input)) }
 }
 
@@ -13,31 +13,31 @@ class Day16 {
                 ).drop(1)
             }.map { Valve(it[0], it[1].toInt(), it[2].split(", ").toSet()) }
 
-
             for (valve in valves) {
                 valve.tunnels.addAll(valve.tunnelsTo.map { to -> valves.find { it.name == to }!! })
             }
 
-            val valvesMap =
-                valves.filterIndexed { index, origin -> origin.rate > 0 || index == 0 }.associateWith { origin ->
-                    valves.filter { it.rate > 0 }.associateWith { target -> bfs(origin, target) }
+            val valvesMap: Map<Valve, Map<Valve, Int>> =
+                valves.filter { origin -> origin.rate > 0 || origin.name == "AA" }.associateWith { origin ->
+                    valves.filter { it !== origin && it.rate > 0 }.associateWith { target -> bfs(origin, target) }
                 }
 
-//            println(valvesMap)
-            return dfs(valves.subList(0, 1), valvesMap)
+            return dfs(listOf(valves.find { it.name == "AA" }!!), valvesMap)
         }
 
 
         private fun bfs(from: Valve, target: Valve): Int {
             val queue = ArrayDeque<Pair<Valve, Int>>()
             queue.add(from to 0)
+            val visited = mutableSetOf<Valve>()
             while (queue.isNotEmpty()) {
                 val next = queue.removeFirst()
+                if (visited.contains(next.first)) continue
+                visited.add(next.first)
                 if (target == next.first) {
                     return next.second
                 }
-                queue.addAll(next.first.tunnels.filter { queue.none { pair -> pair.first == it } }
-                    .map { it to next.second + 1 })
+                queue.addAll(next.first.tunnels.map { it to next.second + 1 })
             }
             error("No Path Found")
         }
@@ -48,10 +48,10 @@ class Day16 {
                 return 0
             }
             val current = path.last()
-            val timeInCurrentCave = if (current.rate > 0)  1 else 0
+            val timeInCurrentCave = if (current.rate > 0) 1 else 0
             val valveTotalPressure = current.rate * (timeLeft - timeInCurrentCave)
             val openValves = valvesMap[current]!!.filter { !path.contains(it.key) }
-            if (openValves.isEmpty()){
+            if (openValves.isEmpty()) {
                 return valveTotalPressure
             }
             return valveTotalPressure + (openValves.maxOfOrNull { (target, distance) ->
