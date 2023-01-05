@@ -1,3 +1,5 @@
+import kotlin.math.max
+
 fun main() {
     val input = readInput("Day16")
     printTime { print(Day16.part1(input)) }
@@ -22,7 +24,10 @@ class Day16 {
                     valves.filter { it !== origin && it.rate > 0 }.associateWith { target -> bfs(origin, target) }
                 }
 
-            return dfs(listOf(valves.find { it.name == "AA" }!!), valvesMap)
+            val valvesIndexes: Map<Valve, Int> =
+                valvesMap.keys.withIndex().associateWith { it.index }.mapKeys { it.key.value }
+
+            return dfs(valves.find { it.name == "AA" }!!, valvesMap, valvesIndexes)
         }
 
 
@@ -43,7 +48,36 @@ class Day16 {
         }
 
 
-        private fun dfs(path: List<Valve>, valvesMap: Map<Valve, Map<Valve, Int>>, timeLeft: Int = 30): Int {
+        private fun dfs(
+            start: Valve,
+            valvesMap: Map<Valve, Map<Valve, Int>>,
+            valvesIndexes: Map<Valve, Int>,
+            timeLeft: Int = 30,
+            valvesState: Int = 0
+        ): Int {
+            var maxPressure = 0
+            for ((neighbor, distance) in valvesMap[start]!!.entries) {
+                val bit = 1 shl valvesIndexes[neighbor]!!
+                if (valvesState and bit > 0)
+                    continue
+                val newTimeLeft = timeLeft - distance - 1
+                if (newTimeLeft <= 0)//try 1
+                    continue
+                maxPressure = max(
+                    maxPressure,
+                    dfs(
+                        neighbor,
+                        valvesMap,
+                        valvesIndexes,
+                        newTimeLeft,
+                        valvesState or bit
+                    ) + neighbor.rate * newTimeLeft
+                )
+            }
+            return maxPressure
+        }
+
+        private fun dfs_v1(path: List<Valve>, valvesMap: Map<Valve, Map<Valve, Int>>, timeLeft: Int = 30): Int {
             if (timeLeft <= 1) {
                 return 0
             }
@@ -55,7 +89,7 @@ class Day16 {
                 return valveTotalPressure
             }
             return valveTotalPressure + (openValves.maxOfOrNull { (target, distance) ->
-                dfs(listOf(*path.toTypedArray(), target), valvesMap, timeLeft - (timeInCurrentCave + distance))
+                dfs_v1(listOf(*path.toTypedArray(), target), valvesMap, timeLeft - (timeInCurrentCave + distance))
             } ?: 0)
         }
 
