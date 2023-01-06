@@ -118,7 +118,7 @@ class Day16 {
 
             var max = 0
 
-            for (i in 0..mask) {
+            for (i in 0..(mask / 2)) {
                 max = max(
                     max,
                     dfs(start, valvesMap, valvesIndexes, 26, i) + dfs(start, valvesMap, valvesIndexes, 26, mask xor i)
