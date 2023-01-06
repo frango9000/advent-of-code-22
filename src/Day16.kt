@@ -3,7 +3,7 @@ import kotlin.math.max
 fun main() {
     val input = readInput("Day16")
     printTime { print(Day16.part1(input)) }
-//    printTime { print(Day16.part2(input)) }
+    printTime { print(Day16.part2(input)) }
 }
 
 class Day16 {
@@ -94,7 +94,38 @@ class Day16 {
         }
 
         fun part2(input: List<String>): Int {
-            return 0
+            val valves = input.map {
+                it.split(
+                    "Valve ", " has flow rate=", "; tunnel leads to valve ", "; tunnels lead to valves "
+                ).drop(1)
+            }.map { Valve(it[0], it[1].toInt(), it[2].split(", ").toSet()) }
+
+            for (valve in valves) {
+                valve.tunnels.addAll(valve.tunnelsTo.map { to -> valves.find { it.name == to }!! })
+            }
+
+            val valvesMap: Map<Valve, Map<Valve, Int>> =
+                valves.filter { origin -> origin.rate > 0 || origin.name == "AA" }.associateWith { origin ->
+                    valves.filter { it !== origin && it.rate > 0 }.associateWith { target -> bfs(origin, target) }
+                }
+
+            val valvesIndexes: Map<Valve, Int> =
+                valvesMap.keys.withIndex().associateWith { it.index }.mapKeys { it.key.value }
+
+            val start = valves.find { it.name == "AA" }!!
+
+            val mask = (1 shl valvesIndexes.size) - 1
+
+            var max = 0
+
+            for (i in 0..mask) {
+                max = max(
+                    max,
+                    dfs(start, valvesMap, valvesIndexes, 26, i) + dfs(start, valvesMap, valvesIndexes, 26, mask xor i)
+                )
+            }
+
+            return max
         }
     }
 
