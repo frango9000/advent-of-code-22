@@ -1,7 +1,7 @@
 fun main() {
     val input = readInput("Day17")
     printTime { print(Day17.part1(input)) }
-    printTime { print(Day17.part2(input)) }
+//    printTime { print(Day17.part2(input)) }
 }
 
 class Day17 {
@@ -33,23 +33,28 @@ class Day17 {
                                 heightMap.add(".".repeat(rockLeftX) + line + ".".repeat(7 - rockLeftX - line.length))
                             } else {
                                 val lineToUpdate = heightMap[rockBottomY + lineIndex]
-                                val updatedLine = lineToUpdate.substring(
-                                    0,
-                                    rockLeftX
-                                ) + line + lineToUpdate.substring(rockLeftX + rock.lines.first().length)
-                                heightMap[rockBottomY + lineIndex] = updatedLine
+
+                                val updatedLine2 = StringBuilder()
+                                for ((index, char) in lineToUpdate.withIndex()) {
+                                    if (char == '#' || (index in (rockLeftX until rockLeftX + line.length) && line[index - rockLeftX] == '#'))
+                                        updatedLine2.append('#')
+                                    else
+                                        updatedLine2.append('.')
+
+                                }
+                                heightMap[rockBottomY + lineIndex] = updatedLine2.toString()
                             }
                         }
                     }
                 }
 //                println()
-//                println(rockIndex)
+//                println(rockIndex + 1)
 //                println(rockDropIndex)
 //                heightMap.print()
 //                println()
             }
 
-            heightMap.print()
+//            heightMap.print()
             return heightMap.size
         }
 
@@ -60,23 +65,23 @@ class Day17 {
         }
     }
 
-    enum class Rock(val lines: List<String>, val leftProfile: String, val rightProfile: String) {
-        A(listOf("####"), "#", "#"),
-        B(listOf(".#.", "###", ".#."), ".#.", ".#."),
-        C(listOf("###", "..#", "..#"), "..#", "###"),
-        D(listOf("#", "#", "#", "#"), "####", "####"),
-        E(listOf("##", "##"), "##", "##");
+    enum class Rock(val lines: List<String>) {
+        A(listOf("####")),
+        B(listOf(".#.", "###", ".#.")),
+        C(listOf("###", "..#", "..#")),
+        D(listOf("#", "#", "#", "#")),
+        E(listOf("##", "##"));
 
 
         fun canMoveLeft(heightMap: List<String>, leftX: Int, bottomY: Int): Boolean {
             if (leftX < 1) return false
-            val relevantHeightMapSlice =
-                heightMap.filterIndexed { index, _ -> index in ((bottomY + leftProfile.length - 1) towards bottomY) }
-                    .map { it[leftX - 1] }
-
-            for ((index, char) in relevantHeightMapSlice.withIndex()) {
-                if ('#' == char && '#' == leftProfile[index]) {
-                    return false
+            for ((y, line) in lines.withIndex()) {
+                if (y + bottomY > heightMap.lastIndex) return true
+                for ((x, char) in line.withIndex()) {
+                    if (char == '#') {
+                        if (heightMap[y + bottomY][x + leftX - 1] == '#') return false
+                        break
+                    }
                 }
             }
             return true
@@ -84,13 +89,13 @@ class Day17 {
 
         fun canMoveRight(heightMap: List<String>, leftX: Int, bottomY: Int): Boolean {
             if (leftX + lines.first().length > 6) return false
-            val relevantHeightMapSlice =
-                heightMap.filterIndexed { index, _ -> index in ((bottomY + rightProfile.length - 1) towards bottomY) }
-                    .map { it[leftX + lines[0].length] }
-
-            for ((index, char) in relevantHeightMapSlice.withIndex()) {
-                if ('#' == char && '#' == rightProfile[index]) {
-                    return false
+            for ((y, line) in lines.withIndex()) {
+                if (y + bottomY > heightMap.lastIndex) return true
+                for ((x, char) in line.withIndex().reversed()) {
+                    if (char == '#') {
+                        if (heightMap[y + bottomY][x + leftX + 1] == '#') return false
+                        break
+                    }
                 }
             }
             return true
@@ -98,24 +103,24 @@ class Day17 {
 
         fun canDrop(heightMap: List<String>, leftX: Int, bottomY: Int): Boolean {
             if (bottomY < 1) return false
-            if (bottomY > heightMap.size) return true
-            val relevantHeightMapSlice =
-                heightMap[bottomY - 1].substring(leftX, leftX + lines.last().length)
-
-            for ((index, char) in relevantHeightMapSlice.withIndex()) {
-                if ('#' == char && '#' == lines.first()[index]) {
-                    return false
+            for ((y, line) in lines.withIndex()) {
+                if (y + bottomY > heightMap.size) return true
+                for ((x, char) in line.withIndex()) {
+                    if (char == '#' && heightMap[y + bottomY - 1][x + leftX] == '#') {
+                        return false
+                    }
                 }
             }
             return true
-
         }
     }
-}
 
 
-fun List<String>.print() {
-    for ((index, line) in this.withIndex().reversed()) {
-        println("$line $index")
+    fun List<String>.print() {
+        for ((index, line) in this.withIndex().reversed()) {
+            println("|$line| ${index + 1}")
+        }
+        println("+-------+")
     }
+
 }
