@@ -12,8 +12,8 @@ class Day17Test {
         assertEquals(3068, Day17.part1(testInput))
     }
 
-//    @Test
-//    fun part2() {
-//        assertEquals(1707, Day17.part2(testInput))
-//    }
+    @Test
+    fun part2() {
+        assertEquals(1514285714288, Day17.part2(testInput))
+    }
 }
