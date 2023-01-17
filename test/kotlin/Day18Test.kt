@@ -28,6 +28,8 @@ class Day18Test {
     fun part1() {
         assertEquals(10, Day18.part1(testInput0))
         assertEquals(64, Day18.part1(testInput1))
+        assertEquals(10, Day18.part1Bitwise(testInput0))
+        assertEquals(64, Day18.part1Bitwise(testInput1))
     }
 
 //    @Test

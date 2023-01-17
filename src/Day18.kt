@@ -1,6 +1,7 @@
 fun main() {
     val input = readInput("Day18")
     printTime { print(Day18.part1(input)) }
+    printTime { print(Day18.part1Bitwise(input)) }
 //    printTime { print(Day18.part2(input)) }
 }
 
@@ -13,24 +14,52 @@ class Day18 {
             val maxY = cubes.maxOf { it.y }
             val maxZ = cubes.maxOf { it.z }
 
-            val sideX = (0..maxY).map { (0..maxZ).map { (0..maxX + 1).map { false }.toMutableList() } }
-            val sideY = (0..maxZ).map { (0..maxX).map { (0..maxY + 1).map { false }.toMutableList() } }
-            val sideZ = (0..maxX).map { (0..maxY).map { (0..maxZ + 1).map { false }.toMutableList() } }
+            val sideX = (0..maxY).map { (0..maxZ).map { 0 }.toMutableList() }
+            val sideY = (0..maxZ).map { (0..maxX).map { 0 }.toMutableList() }
+            val sideZ = (0..maxX).map { (0..maxY).map { 0 }.toMutableList() }
 
             for (cube in cubes) {
-                sideX[cube.y][cube.z][cube.x] = !sideX[cube.y][cube.z][cube.x]
-                sideX[cube.y][cube.z][cube.x + 1] = !sideX[cube.y][cube.z][cube.x + 1]
+                sideX[cube.y][cube.z] = sideX[cube.y][cube.z] xor (1 shl cube.x)
+                sideX[cube.y][cube.z] = sideX[cube.y][cube.z] xor (1 shl cube.x + 1)
 
-                sideY[cube.z][cube.x][cube.y] = !sideY[cube.z][cube.x][cube.y]
-                sideY[cube.z][cube.x][cube.y + 1] = !sideY[cube.z][cube.x][cube.y + 1]
+                sideY[cube.z][cube.x] = sideY[cube.z][cube.x] xor (1 shl cube.y)
+                sideY[cube.z][cube.x] = sideY[cube.z][cube.x] xor (1 shl cube.y + 1)
 
-                sideZ[cube.x][cube.y][cube.z] = !sideZ[cube.x][cube.y][cube.z]
-                sideZ[cube.x][cube.y][cube.z + 1] = !sideZ[cube.x][cube.y][cube.z + 1]
+                sideZ[cube.x][cube.y] = sideZ[cube.x][cube.y] xor (1 shl cube.z)
+                sideZ[cube.x][cube.y] = sideZ[cube.x][cube.y] xor (1 shl cube.z + 1)
             }
 
-            val numOfSidesX = sideX.sumOf { it.sumOf { it.filter { it }.count() } }
-            val numOfSidesY = sideY.sumOf { it.sumOf { it.filter { it }.count() } }
-            val numOfSidesZ = sideZ.sumOf { it.sumOf { it.filter { it }.count() } }
+            val numOfSidesX = sideX.sumOf { it.sumOf { Integer.bitCount(it) } }
+            val numOfSidesY = sideY.sumOf { it.sumOf { Integer.bitCount(it) } }
+            val numOfSidesZ = sideZ.sumOf { it.sumOf { Integer.bitCount(it) } }
+
+            return numOfSidesX + numOfSidesY + numOfSidesZ
+        }
+
+        fun part1Bitwise(input: List<String>): Int {
+            val cubes = input.map { it.split(",").map { it.toInt() } }.map { (x, y, z) -> Position(x, y, z) }
+            val maxX = cubes.maxOf { it.x }
+            val maxY = cubes.maxOf { it.y }
+            val maxZ = cubes.maxOf { it.z }
+
+            val sideX = (0..maxY).map { (0..maxZ).map { 0 }.toMutableList() }
+            val sideY = (0..maxZ).map { (0..maxX).map { 0 }.toMutableList() }
+            val sideZ = (0..maxX).map { (0..maxY).map { 0 }.toMutableList() }
+
+            for (cube in cubes) {
+                sideX[cube.y][cube.z] = sideX[cube.y][cube.z] xor (1 shl cube.x)
+                sideX[cube.y][cube.z] = sideX[cube.y][cube.z] xor (1 shl cube.x + 1)
+
+                sideY[cube.z][cube.x] = sideY[cube.z][cube.x] xor (1 shl cube.y)
+                sideY[cube.z][cube.x] = sideY[cube.z][cube.x] xor (1 shl cube.y + 1)
+
+                sideZ[cube.x][cube.y] = sideZ[cube.x][cube.y] xor (1 shl cube.z)
+                sideZ[cube.x][cube.y] = sideZ[cube.x][cube.y] xor (1 shl cube.z + 1)
+            }
+
+            val numOfSidesX = sideX.sumOf { it.sumOf { Integer.bitCount(it) } }
+            val numOfSidesY = sideY.sumOf { it.sumOf { Integer.bitCount(it) } }
+            val numOfSidesZ = sideZ.sumOf { it.sumOf { Integer.bitCount(it) } }
 
             return numOfSidesX + numOfSidesY + numOfSidesZ
         }
