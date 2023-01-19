@@ -32,8 +32,9 @@ class Day18Test {
         assertEquals(64, Day18.part1Bitwise(testInput1))
     }
 
-//    @Test
-//    fun part2() {
-//        assertEquals(0, Day18.part2(testInput1))
-//    }
+    @Test
+    fun part2() {
+        assertEquals(10, Day18.part2(testInput0))
+        assertEquals(58, Day18.part2(testInput1))
+    }
 }
